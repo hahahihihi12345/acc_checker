@@ -90,7 +90,7 @@ def main():
         exists[username] = False
 
         for user in users_json['users']:
-            is_wanted = user['user']['full_name'] == username
+            is_wanted = user['user']['full_name'] == username or user['user']['username'] == username
             exists[username] = exists[username] or is_wanted
 
             if not is_wanted:
