@@ -5,12 +5,11 @@ from selenium.webdriver.support import expected_conditions as EC
 import json
 import time
 
-
 def log_in(USERNAME, PASSWORD, driver):
     driver.get("https://www.instagram.com/accounts/login")
 
     # refuse cookies
-    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH,\
+    WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH,\
         '/html/body/div[4]/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[2]'))).click()
     
     time.sleep(4)
@@ -19,7 +18,7 @@ def log_in(USERNAME, PASSWORD, driver):
     driver.find_element(By.NAME, 'username').send_keys(USERNAME)
     driver.find_element(By.NAME, 'password').send_keys(PASSWORD)
 
-    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, \
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, \
         '/html/body/div[2]/div/div/div[2]/div/div/div[1]/section/main/div/div/div[1]/div[2]/form/div/div[3]/button'))).click()
 
 
@@ -27,39 +26,18 @@ def get_json(username, driver):
     # get the text from site
     url = "https://www.instagram.com/web/search/topsearch/?query=" + username
     driver.get(url)
-    text = driver.find_element(By.XPATH, "/html/body").text
+    text = driver.page_source
 
     # strip it from bullshit
     if "{" not in text or "users" not in text:
         return {}
-    i = 0
-    while text[i] != "{":
-        i += 1
-    text = text[i:]
 
-    # repair if cut off
-    depth = 0
-    last_whole_index = 0
+    # cut off html part
 
-    for i in range(len(text)):
-        char = text[i]
-        match char:
-            case "{":
-                depth += 1
-            case "}":
-                depth -= 1
-                if depth == 1:
-                    last_whole_index = i
-            case _:
-                pass
-    
-    if depth != 0:
-        text = text[:last_whole_index + 1] + "]}"
+    text = text[:text.index("<")]
 
     # convert it to python and return
     try:
-        with open("response.txt", "w", encoding="utf-8")as resp_file:
-            resp_file.write(text)
         return json.loads(text)
     except:
         with open("response.txt", "w",encoding="utf-8")as resp_file:
@@ -71,12 +49,12 @@ def main():
 
     with open("pass.txt", "r") as pass_file:
         creds = pass_file.read().split(",")
-        MAIN_USERNAME = creds[0]#"PLACEHOLDER_USERNAME" # YOUR username
-        MAIN_PASSWORD = creds[1]#"PLACEHOLDER_PASSWORD"
+    MAIN_USERNAME = creds[0]#"PLACEHOLDER_USERNAME" # YOUR username
+    MAIN_PASSWORD = creds[1]#"PLACEHOLDER_PASSWORD"
 
     REC_FLAG = False
 
-    usernames_to_check = ["lewd._.waifus._.v1", "sunny.video1","jojobeut1"] # WANTED usernames
+    usernames_to_check = ["sunny.video1"] # WANTED usernames
     
     potential_alts = set()
     exists = {}
@@ -84,7 +62,7 @@ def main():
     # open browser & log in Instagram
     driver = webdriver.Edge()
     log_in(MAIN_USERNAME, MAIN_PASSWORD, driver)
-    time.sleep(20)
+    time.sleep(15)
 
     # iterate through the wanted usernames
 
