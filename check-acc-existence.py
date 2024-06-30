@@ -85,7 +85,7 @@ def main():
     driver = webdriver.Chrome()
     driver.implicitly_wait(10)
     log_in(MAIN_USERNAME, MAIN_PASSWORD, driver)
-    time.sleep(20)
+    time.sleep(10)
 
     # iterate through the wanted usernames
 
