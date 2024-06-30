@@ -58,16 +58,22 @@ def get_json(username, driver):
 
     # convert it to python and return
     try:
+        with open("response.txt", "w", encoding="utf-8")as resp_file:
+            resp_file.write(text)
         return json.loads(text)
     except:
-        with open("response.txt", "w")as resp_file:
+        with open("response.txt", "w",encoding="utf-8")as resp_file:
             resp_file.write(text)
         return {}
 
 
 def main():
-    MAIN_USERNAME = "PLACEHOLDER_USERNAME" # YOUR username
-    MAIN_PASSWORD = "PLACEHOLDER_PASSWORD"
+
+    with open("pass.txt", "r") as pass_file:
+        creds = pass_file.read().split(",")
+        MAIN_USERNAME = creds[0]#"PLACEHOLDER_USERNAME" # YOUR username
+        MAIN_PASSWORD = creds[1]#"PLACEHOLDER_PASSWORD"
+
     REC_FLAG = False
 
     usernames_to_check = ["lewd._.waifus._.v1", "sunny.video1","jojobeut1"] # WANTED usernames
@@ -87,9 +93,10 @@ def main():
         if users_json == {}:
             print("invalid JSON")
             continue
-        exists[username] = False
 
+        exists[username] = False
         for user in users_json['users']:
+
             is_wanted = user['user']['full_name'] == username or user['user']['username'] == username
             exists[username] = exists[username] or is_wanted
 
