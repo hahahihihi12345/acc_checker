@@ -87,9 +87,9 @@ def main():
         if users_json == {}:
             print("invalid JSON")
             continue
+        exists[username] = False
 
         for user in users_json['users']:
-            exists[username] = False
             is_wanted = user['user']['full_name'] == username
             exists[username] = exists[username] or is_wanted
 
