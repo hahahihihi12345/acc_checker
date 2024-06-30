@@ -89,13 +89,14 @@ def check_username(driver, username, potential_alts):
 
 
 def main():
+    with open("wanted_usernames.txt", "r", encoding="utf-8") as wanted:
+        usernames_to_check = wanted.read().split(";")# WANTED usernames
+    
     with open("pass.txt", "r") as pass_file:
-        creds = pass_file.read().split(",")
+        creds = pass_file.read().split(";")
+
     MAIN_USERNAME = creds[0]#"PLACEHOLDER_USERNAME" # YOUR username
     MAIN_PASSWORD = creds[1]#"PLACEHOLDER_PASSWORD"
-
-    usernames_to_check = ["sunny.video1"] # WANTED usernames
-    
     potential_alts = set()
     exists = {}
 
