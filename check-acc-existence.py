@@ -82,7 +82,7 @@ def main():
     exists = {}
 
     # open browser & log in Instagram
-    driver = webdriver.Edge()
+    driver = webdriver.Chrome()
     log_in(MAIN_USERNAME, MAIN_PASSWORD, driver)
     time.sleep(20)
 
