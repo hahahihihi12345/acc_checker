@@ -10,9 +10,11 @@ def log_in(USERNAME, PASSWORD, driver):
     driver.get("https://www.instagram.com/accounts/login")
 
     # refuse cookies
-    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH,\
-        '/html/body/div[4]/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[2]'))).click()
-    
+    try:
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH,\
+            '/html/body/div[4]/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[2]'))).click()
+    except:
+        pass
     time.sleep(4)
     
     # input name & password
