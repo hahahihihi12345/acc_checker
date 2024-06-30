@@ -5,10 +5,10 @@ to use:
   - install python and the selenium package
   
   - enter your credentials in a file named "pass.txt" in the same folder you will be launching this script from
-  - username,pasword (no spaces or enters)
+  - username;pasword (no spaces or enters)
 
-  - enter your wanted usernames into the "usernames" list in the main() function (def main(): ...)
-  - I plan to do this through a file eventually
+  - enter your wanted usernames in a file named "wanted_usernames.txt" in the same folder you will be launching this script from
+  - username1;username2;username3... (no spaces or enters)
 
 a short rant about the weird shit I have done in this script and why did I do it:
 
