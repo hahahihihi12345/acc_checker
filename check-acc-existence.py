@@ -9,9 +9,12 @@ def log_in(USERNAME, PASSWORD, driver):
     driver.get("https://www.instagram.com/accounts/login")
 
     # refuse cookies
-    WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH,\
-        '/html/body/div[4]/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[2]'))).click()
-    
+    try:
+        WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH,\
+            '/html/body/div[4]/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[2]'))).click()
+    except:
+        pass
+
     time.sleep(4)
     
     # input name & password
@@ -60,8 +63,10 @@ def main():
     exists = {}
 
     # open browser & log in Instagram
-    driver = webdriver.Edge()
+    driver = webdriver.Chrome()
+    driver.implicitly_wait(10)
     log_in(MAIN_USERNAME, MAIN_PASSWORD, driver)
+
     time.sleep(15)
 
     # iterate through the wanted usernames
