@@ -14,3 +14,5 @@ because it cuts off if its too long. no idea how to get the whole thing so I jus
 at least for now.
 
 why does it shit itself currently? It doesn't - for now, at least.
+
+Note: put creds into creds.py
