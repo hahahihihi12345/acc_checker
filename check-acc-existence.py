@@ -5,11 +5,13 @@ from selenium.webdriver.support import expected_conditions as EC
 import json
 import time
 
+
 def log_in(USERNAME, PASSWORD, driver):
     driver.get("https://www.instagram.com/accounts/login")
 
     # refuse cookies
     try:
+        print("trying")
         WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH,\
             '/html/body/div[4]/div[1]/div/div[2]/div/div/div/div/div[2]/div/button[2]'))).click()
     except:
@@ -36,7 +38,7 @@ def get_json(username, driver):
         return {}
 
     # cut off html part
-
+    text = text[text.index("{"):]
     text = text[:text.index("<")]
 
     # convert it to python and return
@@ -48,14 +50,49 @@ def get_json(username, driver):
         return {}
 
 
-def main():
+def encode(string):
+    return "".join([char for char in string if char.isnumeric()])
 
+
+def get_most_likely(usernames, alts):
+    return [alt for alt in list(alts) if encode(alt) in set([encode(name) for name in usernames])]
+
+
+def print_out(exists, alts):
+    with open("results.txt", "w", encoding="utf-8") as res_file:
+        most_likely = get_most_likely(exists.keys(), alts)
+        for user in exists.keys():
+            res_file.write(user + " is still up\n" if exists[user] else user + " is gone, good work!\n")
+        res_file.write("\nmost likely alts:\n")
+        for alt in list(most_likely):
+            res_file.write(" - " + alt + "\n")
+
+        res_file.write("\npotential alts:\n")
+        for alt in list(alts):
+            res_file.write(" - " + alt + "\n")
+
+
+def check_username(driver, username, potential_alts):
+    users_json = get_json(username, driver=driver)
+    if users_json == {}:
+        print("invalid JSON")
+        return False
+
+    exists = False
+    for user in users_json['users']:
+        is_wanted = user['user']['full_name'] == username or user['user']['username'] == username
+        exists = exists or is_wanted
+        if not is_wanted:
+            potential_alts.add(user['user']['full_name'])
+
+    return exists
+
+
+def main():
     with open("pass.txt", "r") as pass_file:
         creds = pass_file.read().split(",")
     MAIN_USERNAME = creds[0]#"PLACEHOLDER_USERNAME" # YOUR username
     MAIN_PASSWORD = creds[1]#"PLACEHOLDER_PASSWORD"
-
-    REC_FLAG = False
 
     usernames_to_check = ["sunny.video1"] # WANTED usernames
     
@@ -63,43 +100,17 @@ def main():
     exists = {}
 
     # open browser & log in Instagram
-    driver = webdriver.Chrome()
+    driver = webdriver.Edge()
     driver.implicitly_wait(10)
     log_in(MAIN_USERNAME, MAIN_PASSWORD, driver)
-
     time.sleep(15)
 
     # iterate through the wanted usernames
-
     for username in usernames_to_check:
-        users_json = get_json(username, driver=driver)
-        if users_json == {}:
-            print("invalid JSON")
-            continue
+        exists[username] = check_username(driver, username, potential_alts)
+        time.sleep(1)
 
-        exists[username] = False
-        for user in users_json['users']:
-
-            is_wanted = user['user']['full_name'] == username or user['user']['username'] == username
-            exists[username] = exists[username] or is_wanted
-
-            if not is_wanted:
-                if REC_FLAG:
-                    pass
-                else:
-                    potential_alts.add(user['user']['full_name'])
-            
-            time.sleep(1)
-
-
-
-    with open("results.txt", "w", encoding="utf-8") as res_file:
-        for user in exists.keys():
-            res_file.write(user + " is still up\n" if exists[user] else user + " is gone, good work!\n")
-        res_file.write("potential alts:\n")
-
-        for alt in list(potential_alts):
-            res_file.write(" - " + alt + "\n")
+    print_out(exists, potential_alts)
 
 
 if '__main__':
