@@ -73,6 +73,7 @@ def main():
     usernames_to_check = ["lewd._.waifus._.v1", "sunny.video1","jojobeut1"] # WANTED usernames
     
     potential_alts = set()
+    exists = {}
 
     # open browser & log in Instagram
     driver = webdriver.Edge()
@@ -87,8 +88,6 @@ def main():
             print("invalid JSON")
             continue
 
-
-        exists = {}
         for user in users_json['users']:
             exists[username] = False
             is_wanted = user['user']['full_name'] == username
