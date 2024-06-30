@@ -83,6 +83,7 @@ def main():
 
     # open browser & log in Instagram
     driver = webdriver.Chrome()
+    driver.implicitly_wait(10)
     log_in(MAIN_USERNAME, MAIN_PASSWORD, driver)
     time.sleep(20)
 
