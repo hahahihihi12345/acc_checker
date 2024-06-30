@@ -104,7 +104,7 @@ def main():
 
 
 
-    with open("results.txt", "w") as res_file:
+    with open("results.txt", "w", encoding="utf-8") as res_file:
         for user in exists.keys():
             res_file.write(user + " is still up\n" if exists[user] else user + " is gone, good work!\n")
         res_file.write("potential alts:\n")
