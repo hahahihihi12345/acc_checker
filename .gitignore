@@ -13,7 +13,7 @@
 *__pycache__/
 *response.txt
 *results.txt
-*wanted-usernames.txt
+*wanted_usernames.txt
 
 *.rsuser
 *.suo
