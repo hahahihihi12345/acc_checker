@@ -1,6 +1,8 @@
 # acc_checker
 Check if usernames exist and find potential alts or get their ID code
 
+THE ALTS ARE POTENTIAL, MANUALLY VERIFY IF THEY ARE REALLY ALTS
+
 to use:
   - install python and the selenium package
   
