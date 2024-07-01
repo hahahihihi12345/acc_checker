@@ -58,11 +58,11 @@ def get_most_likely(usernames, alts):
     return [alt for alt in list(alts) if encode(alt) in set([encode(name) for name in usernames])]
 
 
-def print_out(exists, alts):
+def print_out_txt(exists, alts):
     with open("results.txt", "w", encoding="utf-8") as res_file:
         most_likely = get_most_likely(exists.keys(), alts)
         for user in exists.keys():
-            res_file.write(user + " is still up\n" if exists[user] else user + " is gone, good work!\n")
+            res_file.write(user + " is still up\n" if exists[user][0] else user + " is gone, good work!\n")
         res_file.write("\nmost likely alts:\n")
         for alt in list(most_likely):
             res_file.write(" - " + alt + "\n")
@@ -72,18 +72,28 @@ def print_out(exists, alts):
             res_file.write(" - " + alt + "\n")
 
 
+def print_out_csv(exists):
+    par = lambda val: f'"{val}"'
+    with open("username-ID.csv", "w", encoding="utf-8") as res_file:
+        res_file.write('"username";"user ID";"exists"\n')
+        for user in exists.keys():
+            res_file.write(";".join((par(user), par(exists[user][1] if exists[user][0] else ""), par("True" if exists[user][0] else "False"))))
+
+
 def check_username(driver, username, potential_alts):
     users_json = get_json(username, driver=driver)
     if users_json == {}:
         print("invalid JSON")
         return False
 
-    exists = False
+    exists = (False,)
     for user in users_json['users']:
         is_wanted = user['user']['full_name'] == username or user['user']['username'] == username
-        exists = exists or is_wanted
         if not is_wanted:
             potential_alts.add(user['user']['full_name'])
+        else:
+            exists = (True, user['user']['pk_id'])
+
 
     return exists
 
@@ -95,8 +105,14 @@ def main():
     with open("pass.txt", "r") as pass_file:
         creds = pass_file.read().split(";")
 
-    MAIN_USERNAME = creds[0]#"PLACEHOLDER_USERNAME" # YOUR username
-    MAIN_PASSWORD = creds[1]#"PLACEHOLDER_PASSWORD"
+    MAIN_USERNAME = creds[0] # YOUR username
+    MAIN_PASSWORD = creds[1]
+
+    mode = ""
+    accepted_modes = {"txt", "csv"}
+    while mode not in accepted_modes:
+        mode = input("Input mode: ")
+
     potential_alts = set()
     exists = {}
 
@@ -111,7 +127,11 @@ def main():
         exists[username] = check_username(driver, username, potential_alts)
         time.sleep(1)
 
-    print_out(exists, potential_alts)
+    match mode:
+        case "txt":
+            print_out_txt(exists, potential_alts)
+        case "csv":
+            print_out_csv(exists)
 
 
 if '__main__':
