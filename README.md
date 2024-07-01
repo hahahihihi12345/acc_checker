@@ -1,3 +1,5 @@
+Warning - I strongly advise using an burner account for these, as Insta will block you from signing in if you overdo it
+
 # acc_checker
 Check if usernames exist and find potential alts or get their ID code
 
