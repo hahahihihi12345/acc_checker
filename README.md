@@ -13,6 +13,11 @@ to use:
   - username1;username2;username3... (no spaces or enters)
 
   - enter any keywords you want to look for in the results into file keywords.txt - empty file = all results without filter
+  - <--- KEEP THE KEYWORDS YOU USE TO YOURSELF - THE ENEMY IS LISTENING --->
+
+  - I added a option of recursive search - choose depth by changing its variable at the start of the main() function, default (zero) is normal search
+  - A word of warning - this is a feature with exponential complexity - which means it takes a lot of time.
+  - This feature has been tested very little and could fail, proceed with caution
 
 # acc_checker
 Check if usernames exist and find potential alts or get their ID code
