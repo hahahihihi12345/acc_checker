@@ -98,6 +98,29 @@ def check_username(driver, username, potential_alts):
     return exists
 
 
+def status_check(username: str, driver) -> list[bool, str, bool]:
+    '''
+    checks if account exists, its id and if its private (returned in this order)
+    '''
+    # get the text from site
+    url = "https://www.instagram.com/web/search/topsearch/?query=" + username
+    driver.get(url)
+    text = driver.page_source
+    res = [False, "", False]
+    text = text[text.index("{"):]
+
+    first_name_index = text.index('"username":"') + len('"username":"')
+    first_id_index = text.index('"pk_id":"') + len('"pk_id":"')
+    first_private_index = text.index('"is_private":') + len('"is_private":')
+    
+    res[0] = text[first_name_index:first_name_index + len(username)] == username # is the first match our username?
+    if res[0]:
+        res[1] = text[first_id_index:text.index('"', first_id_index)]
+        res[2] = text[first_private_index:text.index('"', first_private_index)]
+
+    return res
+
+
 def main():
     with open("wanted_usernames.txt", "r", encoding="utf-8") as wanted:
         usernames_to_check = wanted.read().split(";")# WANTED usernames
@@ -134,5 +157,5 @@ def main():
             print_out_csv(exists)
 
 
-if '__main__':
+if __name__ == '__main__':
     main()
