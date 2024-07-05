@@ -116,7 +116,7 @@ def status_check(username: str, driver) -> list[bool, str, bool]:
     res[0] = text[first_name_index:first_name_index + len(username)] == username # is the first match our username?
     if res[0]:
         res[1] = text[first_id_index:text.index('"', first_id_index)]
-        res[2] = text[first_private_index:text.index('"', first_private_index)]
+        res[2] = not text[first_private_index:text.index('"', first_private_index)] == "false"
 
     return res
 
